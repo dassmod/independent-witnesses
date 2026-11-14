@@ -1,0 +1,9 @@
+# Raw and derived data stay local: the dumps are large and X's terms govern redistribution.
+data/
+*.parquet
+*.tsv
+*.zip
+__pycache__/
+.venv/
+.DS_Store
+.tmp/
