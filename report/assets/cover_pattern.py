@@ -24,23 +24,33 @@ def grid_lines(color, width):                                                # t
             x = k * a; d.line([(x, 0), (x + sgn * TW / np.sqrt(3), TW)], fill=color, width=width)
 grid_lines(PAPER, 19)                       # a clear strip either side, so the line reads against the hatching
 grid_lines(INK, 6)
-def rounded(tri, grow):
-    c = np.mean(tri, axis=0); ri = a / (2 * np.sqrt(3)); t = inset + rc
-    inner = [c + (np.array(p) - c) * (ri - t) / ri for p in tri]
-    pts = []
+rng = np.random.default_rng(15)
+INSETS = np.array([7.0, 24.0, 44.0]); PROB = [0.32, 0.46, 0.22]   # tight to the line, normal, wide hatched channel
+def rounded(tri, grow, ins):
+    """Rounded triangle inside tri, each edge pulled in by its own inset (ins[k] for edge k -> k+1)."""
+    c = np.mean(tri, axis=0); P = [np.array(p, float) for p in tri]; lines = []
     for k in range(3):
-        p = inner[k]; for_prev = inner[k - 1]; nxt = inner[(k + 1) % 3]
-        for q2 in (for_prev, nxt):
+        p, q2 = P[k], P[(k + 1) % 3]; e = q2 - p; n = np.array([e[1], -e[0]]) / np.linalg.norm(e)
+        if np.dot(n, c - p) < 0: n = -n
+        lines.append((p + n * (ins[k] + rc), e))
+    inner = []
+    for k in range(3):                                          # vertex k sits between edges k-1 and k
+        (p1, e1), (p2, e2) = lines[k - 1], lines[k]
+        A_ = np.array([e1, -e2]).T; t_ = np.linalg.solve(A_, p2 - p1); inner.append(p1 + e1 * t_[0])
+    cc = np.mean(inner, axis=0); pts = []
+    for k in range(3):
+        p = inner[k]
+        for q2 in (inner[k - 1], inner[(k + 1) % 3]):
             e = q2 - p; n = np.array([e[1], -e[0]]) / np.linalg.norm(e)
-            if np.dot(n, p - c) < 0: n = -n
+            if np.dot(n, p - cc) < 0: n = -n
             pts.append(tuple(p + n * (rc + grow)))
-    hull = sorted(pts, key=lambda p: np.arctan2(p[1] - c[1], p[0] - c[0]))
+    hull = sorted(pts, key=lambda p: np.arctan2(p[1] - cc[1], p[0] - cc[0]))
     return hull, inner
-def draw_tile(dr, tri, fill):
-    hull, inner = rounded(tri, sw)
+def draw_tile(dr, tri, fill, ins):
+    hull, inner = rounded(tri, sw, ins)
     dr.polygon(hull, fill=INK)
     for p in inner: dr.ellipse([p[0] - rc - sw, p[1] - rc - sw, p[0] + rc + sw, p[1] + rc + sw], fill=INK)
-    hull, inner = rounded(tri, 0)
+    hull, inner = rounded(tri, 0, ins)
     dr.polygon(hull, fill=fill)
     for p in inner: dr.ellipse([p[0] - rc, p[1] - rc, p[0] + rc, p[1] + rc], fill=fill)
 # perspective: output corners map to a quad on the flat texture (near bottom right, far top left)
@@ -60,8 +70,9 @@ NEON_TILES = {(best[0], best[1], 0), (best[0], best[1], 1)}           # an up an
 neon_mask = Image.new("L", (TW, TW), 0); dn_ = ImageDraw.Draw(neon_mask)
 for i, j, o, tri in tiles:
     if all(-a < p[0] < TW + a and -a < p[1] < TW + a for p in tri):
-        draw_tile(d, tri, PAPER)
-        if (i, j, o) in NEON_TILES: draw_tile(dn_, tri, 255)
+        ins = rng.choice(INSETS, 3, p=PROB)
+        draw_tile(d, tri, PAPER, ins)
+        if (i, j, o) in NEON_TILES: draw_tile(dn_, tri, 255, ins)
 out = tex.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
 nm = neon_mask.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
 g = np.asarray(out).astype(np.float32)
@@ -73,9 +84,14 @@ rgb = np.repeat(g[..., None], 3, axis=2)
 m = (np.asarray(nm).astype(np.float32) / 255)[..., None]
 rgb = rgb * (1 - m) + np.array(NEON, float) * m
 Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).save("pattern.png")
-# frosted text column
-base = Image.open("pattern.png"); blur = np.asarray(base.filter(ImageFilter.GaussianBlur(34))).astype(np.float32)
-frost = blur + (250 - blur) * 0.80
-t = np.clip((xx / (W * 2) - 0.62) / 0.10, 0, 1); t = (t * t * (3 - 2 * t))[..., None]
-final = np.asarray(base).astype(np.float32) * (1 - t) + frost * t
+# frosted text column: blur and lightening both grow smoothly from left to right
+base = Image.open("pattern.png"); B0 = np.asarray(base).astype(np.float32)
+levels = [B0] + [np.asarray(base.filter(ImageFilter.GaussianBlur(rad))).astype(np.float32) for rad in (6, 14, 26, 40)]
+u = np.clip((xx / (W * 2) - 0.46) / (0.74 - 0.46), 0, 1); u = u ** 3 * (u * (u * 6 - 15) + 10)   # smootherstep
+pos = u * (len(levels) - 1); k0 = np.floor(pos).astype(int); fr = (pos - k0)[..., None]
+k1 = np.minimum(k0 + 1, len(levels) - 1)
+stack = np.stack(levels)                                          # (L, H, W, 3)
+hh, ww = np.indices(k0.shape)
+blurred = stack[k0, hh, ww] * (1 - fr) + stack[k1, hh, ww] * fr
+final = blurred + (250 - blurred) * (0.82 * u ** 0.55)[..., None]   # lightening runs ahead of the blur, so the middle of the fade stays light
 Image.fromarray(np.clip(final, 0, 255).astype(np.uint8)).save("cover_bg.png")
