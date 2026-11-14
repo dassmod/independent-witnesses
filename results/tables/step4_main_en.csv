@@ -1,0 +1,3 @@
+measure,AI-AI_pooled,human-human_reweighted,difference,ci_lo,ci_hi,bootstrap_resamples,posts_resampled
+jaccard,0.1676,0.1485,0.0192,0.0138,0.0243,1000,90410
+any_shared,0.3903,0.2031,0.1872,0.1788,0.1951,1000,90410

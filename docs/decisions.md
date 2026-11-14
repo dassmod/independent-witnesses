@@ -50,4 +50,10 @@ The post-weighted, time-matched difference in source Jaccard between AI-AI pairs
 
 ## Change log
 
-(empty)
+- 14 Nov 2026, before any pair was computed: the exclusion "links to the noted post itself" is applied to any URL that contains the post's own id, not only x.com/status links. Reason: 169 AI notes link the post through opennotenetwork.com/posts/x--ID.
+
+- 14 Nov 2026, after the first main number was seen (Jaccard difference +0.015, 95% CI [+0.010, +0.020]); these are post hoc and marked as such:
+  - Robustness check added: pairs in English only. Result: difference +0.019 [+0.014, +0.024]. Language mix does not explain the gap.
+  - Check of who the AI writers outside the fleet are. Six writers (6531ED68, 9A4E061C, C08CB980, A09F8A99, 46EF8576, EA7F9E35) post within about one second of each other; they account for 98% of non-fleet AI-AI pairs under one minute. Start dates differ (Sep 2025 to Feb 2026), volumes are small. Same operator or a shared trigger (all respond to the same note requests) cannot be told apart from this data.
+  - **(Das)** Decision: these six are NOT merged into one author. The main result stays as defined above. Planned instead: a robustness row without pairs under one minute.
+  - The under-1-minute AI-AI line (0.285 vs 0.205 human) is dominated by these six writers and is not used as separate evidence.
