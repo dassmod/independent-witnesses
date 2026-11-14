@@ -1,0 +1,6 @@
+group,pairs,posts,share_helpful,phi,phi_lo,phi_hi
+AI-AI,2444,2015,0.9562,0.843,0.7851,0.8975
+human-human,6655,4911,0.8237,0.7938,0.7659,0.8179
+AI-human,5486,4351,0.959,0.5269,0.4623,0.5875
+fleet-fleet,1253,1249,0.9876,0.9673,0.8741,1.0
+AI-AI minus human-human,,,,0.0491,-0.0149,0.111

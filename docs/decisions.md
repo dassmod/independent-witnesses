@@ -92,3 +92,9 @@ Prompted by Gong and Wu (2026), who name "studies of writer diversity and govern
 - Same pairs and measures as the main source measure and the text measure, grouped by the creation month of the later note.
 - Expectation from the shared-template mechanism: AI-AI similarity rises as more writers join.
 - What proves it wrong: source Jaccard and the text above-threshold share of AI-AI pairs in Jul-Nov 2026 are not higher than in Nov 2025-Mar 2026 (95% interval of the difference includes zero or lies below it).
+
+## Results of the extension (15 Nov 2026)
+
+- A: Apr-Nov 2026, the fleet wrote 51.2% of shown MISLEADING notes (43.5% of submitted); all AI writers 56.5% of shown. Monthly table in results/tables/extA_concentration_monthly.csv.
+- B: phi AI-AI 0.843 [0.785, 0.898], human-human 0.794 [0.766, 0.818], difference +0.049 [-0.015, +0.111]. **Refuted by the registered criterion**: AI notes on one post do not share fate measurably more than human notes. Fate is strongly shared in every group (the post and its raters dominate). AI-human pairs share fate less (0.527). Not-helpful AI notes are rare (AI-AI decided pairs: 95.6% helpful), so the test has little room.
+- C: AI-AI late minus early: source Jaccard +0.005 [-0.003, +0.013], text above threshold -0.009 [-0.019, +0.002]. **Refuted by the registered criterion**: AI-AI similarity did not rise as writers joined; it is about stable from late 2025 on.
