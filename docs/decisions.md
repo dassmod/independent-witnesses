@@ -67,3 +67,28 @@ The post-weighted, time-matched difference in source Jaccard between AI-AI pairs
 - 14 Nov 2026, step 8 (reading) and copies, post hoc:
   - Das read 27 of the 40 blind pairs; Gemini labeled all 40 with the same three questions and did not open links (judged from URLs and text). Agreement on "same evidence": 17/27. The "obvious vs choice" label is unreliable (systematic disagreement) and is used only descriptively. In high-overlap pairs, human pairs rest on the same evidence more often (Das 7/9, Gemini 14/15) than AI pairs (Das 5/11, Gemini 10/15): AI pairs with a shared link more often share only part of the evidence, which is why "any shared link" overstates dependence and Jaccard is kept as the main measure.
   - Copies (src/09): near copies (4-gram Jaccard >= 0.8) are 1.16% of human-human pairs, 0.77% of AI-human, 0.05% of AI-AI (post-weighted). AI-AI similarity is not copying; copying sits in the human baseline and is too rare to explain the text gap.
+
+# Extension, registered 15 Nov 2026 before computing B and C **(Das: go ahead with A, B, C)**
+
+Prompted by Gong and Wu (2026), who name "studies of writer diversity and governance" as future work, and by a quick check of who writes the shown notes (seen before this entry, see A).
+
+## A. Concentration of shown notes (descriptive)
+
+- Notes: non-collaborative, MISLEADING, created since 2 Sep 2025. Shown = `currentStatus` CURRENTLY_RATED_HELPFUL.
+- By creation month: share of shown notes and of submitted notes written by the fleet, other AI writers, humans.
+- Already seen before this entry: fleet share of shown notes 48.0% (2026 Q2), 51.9% (Q3), 56.3% (Q4 to 12 Nov). Reported as descriptive, with the caveat that recent months are not settled (most notes still need ratings).
+
+## B. Shared fate of two notes on the same post
+
+- Pairs: same rules as the main measure (same post, different authors, same language, gap up to 24 hours, MISLEADING, fleet as one author with fleet-fleet as its own group). No link requirement.
+- Only pairs where both notes have a decided `currentStatus` (CURRENTLY_RATED_HELPFUL = 1, CURRENTLY_RATED_NOT_HELPFUL = 0).
+- Measure: phi correlation of the two outcomes, from the post-weighted 2x2 table. Human-human windows reweighted to the AI-AI time profile (<1h, 1-6h, 6-24h), as in the main measure. Cluster bootstrap over posts, 1,000 resamples.
+- What proves it wrong: the 95% interval of phi(AI-AI) minus phi(human-human) includes zero or lies below it. Then AI notes on one post do not share fate more than human notes do.
+- Secondary: within AI-AI pairs, concordance (same outcome) for pairs above vs below the human top-5% text threshold, and for pairs with vs without a shared source.
+- Known limits, written now: few AI notes are rated not helpful, so the interval may be wide; status depends on raters, who often rate both notes on a post (true for both groups).
+
+## C. AI-AI similarity over time
+
+- Same pairs and measures as the main source measure and the text measure, grouped by the creation month of the later note.
+- Expectation from the shared-template mechanism: AI-AI similarity rises as more writers join.
+- What proves it wrong: source Jaccard and the text above-threshold share of AI-AI pairs in Jul-Nov 2026 are not higher than in Nov 2025-Mar 2026 (95% interval of the difference includes zero or lies below it).
