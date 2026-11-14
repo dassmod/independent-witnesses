@@ -4,6 +4,7 @@ Draft structure. Nine slides, about 30 seconds each. Every slide title is the cl
 
 | # | Title (the claim) | On the slide | Say (one or two sentences) | Source |
 |---|---|---|---|---|
+| 0 | (cover) | `report/assets/cover.png` | | |
 | 1 | Two notes, one witness | The Bollywood pair side by side: two accounts, same minute, same two links in opposite order | These look like two contributors agreeing. They are two accounts of one system. | reading file, example pair |
 | 2 | Community Notes checks that raters are independent. Nobody checks the writers | Small diagram: writers propose, raters decide, bridging sits on the rater side. One line: AI writers now submit more than half of new notes | Agreement is evidence only if witnesses are independent. The design tests that for raters only. | Wojcik 2022; Gong and Wu 2026 |
 | 3 | Six accounts behave as one system | Three facts: 86% of AI notes; five started on 17 Dec 2025; 1, 2 or 3 of them per post, never more | We call them the fleet and count them as one author. | `docs/data-notes.md` |
