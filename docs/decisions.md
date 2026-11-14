@@ -98,3 +98,23 @@ Prompted by Gong and Wu (2026), who name "studies of writer diversity and govern
 - A: Apr-Nov 2026, the fleet wrote 51.2% of shown MISLEADING notes (43.5% of submitted); all AI writers 56.5% of shown. Monthly table in results/tables/extA_concentration_monthly.csv.
 - B: phi AI-AI 0.843 [0.785, 0.898], human-human 0.794 [0.766, 0.818], difference +0.049 [-0.015, +0.111]. **Refuted by the registered criterion**: AI notes on one post do not share fate measurably more than human notes. Fate is strongly shared in every group (the post and its raters dominate). AI-human pairs share fate less (0.527). Not-helpful AI notes are rare (AI-AI decided pairs: 95.6% helpful), so the test has little room.
 - C: AI-AI late minus early: source Jaccard +0.005 [-0.003, +0.013], text above threshold -0.009 [-0.019, +0.002]. **Refuted by the registered criterion**: AI-AI similarity did not rise as writers joined; it is about stable from late 2025 on.
+
+# Second extension, registered 15 Nov 2026 before computing **(Das: go ahead with 1, 4, 2)**
+
+## D. Cross-post baseline: style versus shared content
+
+- Within-post pairs: as in the main measure and the text measure.
+- Cross-post pairs: notes in the same group, same language, created on the same calendar day (UTC), on different posts, by different authors (fleet counted as one author, so no fleet-fleet pairs). Built by shuffling notes inside each (day, language, group) bucket with a fixed seed and pairing neighbours. Their similarity measures shared style and shared news of the day, not a shared post.
+- Measures: text above the human top-5% threshold (window of the pair's gap), mean 4-gram Jaccard, source Jaccard (both notes with links).
+- Excess = within-post minus cross-post, for AI-AI and for human-human, pooled over the windows with the AI-AI within-post time profile.
+- What proves the shared-content reading wrong: the 95% interval of (AI-AI excess minus human-human excess) for the text above-threshold share includes zero or lies below it. Then the AI text gap is style, not more shared content per post.
+- Bootstrap: within-post pairs resampled by post, cross-post pairs by pair, 500 resamples each.
+
+## E. Dependence of coverage on one system (descriptive)
+
+- Posts with at least one shown note (CURRENTLY_RATED_HELPFUL, MISLEADING, created since 2 Sep 2025), all notes counted, collaborative notes (Grok drafts) included as their own source.
+- Share of covered posts whose shown notes all come from the fleet; and of those, the share where no one else wrote any note. By month of the first shown note.
+
+## F. Robustness of the headline numbers (descriptive)
+
+Recompute the main source Jaccard difference and the AI-AI text above-threshold share under: fleet = top six (main), top seven (adds the next largest AI writer), no fleet merge; 3-gram instead of 4-gram; threshold at the human top 10% instead of 5%; windows <30 min, 30 min to 3 h, 3 to 24 h. Bootstrap over posts, 300 resamples. Reported whatever they show.
