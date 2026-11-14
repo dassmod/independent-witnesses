@@ -16,7 +16,7 @@ Draft structure. Nine slides, about 30 seconds each. Every slide title is the cl
 
 ## Notes
 
-- Figures 1 and 2 do not exist yet. Both come straight from the tables named above.
+- Figure 1 (slide 4): `results/figures/fig1_who_writes_shown_notes.png`. Figure 2 (slide 7): `results/figures/fig2_same_post_vs_cross_post.png`. Both are drawn by `src/16_figures.py` from the tables named above.
 - Slide 1 shows note text. It is public data, but keep it to this one pair and do not show participant ids.
 - Limits go on slide 8 or 9 in one line: behaviour, not proof of one operator; no post text; small reading sample.
 - For the PDF: export at 16:9, large type, the claim readable without the voice.

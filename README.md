@@ -23,6 +23,8 @@ Data: X's public Community Notes files, dump dated 12 November 2026. Window: 2 S
 | Shared fate of two notes (phi), AI-AI minus human-human | +0.049 [-0.015, +0.111], **not supported** | `extB_shared_fate.csv` |
 | AI-AI similarity late 2026 vs a year earlier | sources +0.005 [-0.003, +0.013], text -0.009 [-0.019, +0.002], **not supported** | `extC_trend_test.csv` |
 
+![Who writes the notes that readers see](results/figures/fig1_who_writes_shown_notes.png)
+
 In words: one system writes about half of the notes readers see. AI writers from different operators share sources only slightly more than humans do, but facing the same post they produce similar wording about 2.4 times as often as two humans. That is not copying and not house style. We found no evidence that it changes whether notes are rated helpful.
 
 ## Method in brief
@@ -58,6 +60,7 @@ python src/12_over_time.py            # similarity by month
 python src/13_cross_post_baseline.py  # style vs shared content
 python src/14_coverage_dependence.py  # posts covered only by the fleet
 python src/15_robustness.py           # alternative settings
+python src/16_figures.py              # figures for the report
 ```
 
 ## Layout
@@ -65,6 +68,7 @@ python src/15_robustness.py           # alternative settings
 ```
 src/              numbered pipeline scripts
 results/tables/   every number in the report
+results/figures/  the two report figures
 docs/             decisions (preregistration and change log), data notes
 report/           report draft and slide outline
 data/             local only (gitignored)

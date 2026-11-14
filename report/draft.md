@@ -73,7 +73,9 @@ To interpret a disagreement between the two source measures, 40 pairs were sampl
 
 ### 4.1 One system writes half of what readers see
 
-<!-- Figure 1: monthly share of shown notes by fleet / other AI / human, from extA_concentration_monthly.csv -->
+![Figure 1](../results/figures/fig1_who_writes_shown_notes.png)
+
+*Figure 1. Share of shown (helpful) notes on misleading posts by writer group, by month the note was written. November 2026 is partial and recent months are not settled. Source: `extA_concentration_monthly.csv`.*
 
 The fleet's share of shown notes rose from 3.7% (December 2025) to 19.7% (March 2026) and 42.6% (April 2026). From April to November 2026 it wrote 51.2% of 61,119 shown notes, against 43.5% of submitted notes; all AI writers together wrote 56.5%.
 
@@ -94,7 +96,9 @@ The two measures disagree. Reading explains why (Section 4.5).
 
 ### 4.3 Text: a large difference
 
-<!-- Figure 2: within-post vs cross-post similarity, AI-AI and human-human, from extD_cross_post.csv -->
+![Figure 2](../results/figures/fig2_same_post_vs_cross_post.png)
+
+*Figure 2. Share of note pairs more alike in wording than the most similar 5% of human pairs on the same post (human rate is 5% by construction). Blue: two notes on the same post. Orange: two notes on different posts, same day and language. AI-AI: different operators. 95% CI from a cluster bootstrap over posts. Sources: `step5_text_main.csv`, `extD_cross_post.csv`.*
 
 | Group | Pairs above the human top-5% bar | Mean 4-gram overlap, under 1 h / 1 to 6 h / 6 to 24 h |
 |---|---|---|
