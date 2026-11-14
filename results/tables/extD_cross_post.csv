@@ -1,0 +1,10 @@
+measure,group,within_post,w_lo,w_hi,cross_post,c_lo,c_hi,excess,e_lo,e_hi
+text above human top-5%,AI-AI,0.121,0.1169,0.1253,0.0002,0.0001,0.0003,0.1209,0.1167,0.1251
+text above human top-5%,human-human,0.05,0.0477,0.0524,0.0023,0.0016,0.003,0.0478,0.0454,0.0501
+text above human top-5%,AI-AI excess minus human excess,,,,,,,0.0731,0.0688,0.0783
+mean 4-gram Jaccard,AI-AI,0.2053,0.2041,0.2065,0.0329,0.0324,0.0336,0.1724,0.1711,0.1736
+mean 4-gram Jaccard,human-human,0.1105,0.1088,0.1121,0.0274,0.0267,0.0281,0.0831,0.0812,0.085
+mean 4-gram Jaccard,AI-AI excess minus human excess,,,,,,,0.0892,0.0872,0.0915
+source Jaccard,AI-AI,0.1708,0.1678,0.1737,0.0012,0.0007,0.0017,0.1696,0.1666,0.1725
+source Jaccard,human-human,0.1564,0.1525,0.1604,0.0032,0.0024,0.0041,0.1532,0.1493,0.157
+source Jaccard,AI-AI excess minus human excess,,,,,,,0.0163,0.0114,0.0215

@@ -1,0 +1,7 @@
+variant,AI-AI pairs,source_jaccard_diff,lo,hi,AI-AI_text_above,lo,hi,human_reference
+"main: fleet = top 6, 4-gram, top 5%, windows 1h/6h",34724,0.0143,0.0101,0.0187,0.121,0.1088,0.1379,0.05
+fleet = top 7,27898,0.0277,0.023,0.0325,0.1287,0.1148,0.1466,0.05
+no fleet merge (fleet-fleet counted as AI-AI),60558,0.0507,0.0465,0.0544,0.1439,0.1298,0.1611,0.05
+3-gram,34724,0.0143,0.0101,0.0187,0.1443,0.1304,0.1661,0.05
+threshold at human top 10%,34724,0.0143,0.0101,0.0187,0.4313,0.4171,0.4508,0.1
+windows 30min / 3h,34724,0.0125,0.0076,0.0175,0.1179,0.1045,0.1333,0.05

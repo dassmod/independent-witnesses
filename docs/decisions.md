@@ -118,3 +118,9 @@ Prompted by Gong and Wu (2026), who name "studies of writer diversity and govern
 ## F. Robustness of the headline numbers (descriptive)
 
 Recompute the main source Jaccard difference and the AI-AI text above-threshold share under: fleet = top six (main), top seven (adds the next largest AI writer), no fleet merge; 3-gram instead of 4-gram; threshold at the human top 10% instead of 5%; windows <30 min, 30 min to 3 h, 3 to 24 h. Bootstrap over posts, 300 resamples. Reported whatever they show.
+
+## Results of the second extension (15 Nov 2026)
+
+- D: cross-post pairs are almost never similar. Text above threshold: AI-AI cross-post 0.000, human 0.002; mean 4-gram Jaccard 0.033 vs 0.027. Excess over cross-post, AI-AI minus human: text above threshold +0.073 [+0.069, +0.078], mean 4-gram +0.089 [+0.087, +0.092], sources +0.016 [+0.011, +0.022]. **Not refuted**: the AI text gap is not house style; it appears only when two AI notes address the same post.
+- E: Apr-Nov 2026, 54,974 posts had a shown note. On 47.3% the shown notes all came from the fleet; on 34.3% nobody else wrote any note. Any fleet note shown on 55.1%; human-only shown on 40.0%; Grok collaborative notes alone on 1.5%.
+- F: all variants keep the conclusions. Source Jaccard difference stays small and positive (+0.013 to +0.051; largest when fleet pairs are not merged). AI-AI text above threshold 0.118 to 0.144 against 0.05 for humans; 0.431 against 0.10 at the human top 10%. Note: on the text-measure pair set the main source difference is +0.014 (+0.015 on the main set).

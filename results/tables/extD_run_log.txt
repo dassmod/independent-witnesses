@@ -1,0 +1,16 @@
+within-post pairs: AI-AI 34,724, human 102,924; cross-post pairs: AI-AI 28,504, human 95,019
+
+== text above human top-5%
+  AI-AI        within 0.121  cross 0.000 [0.000, 0.000]  excess +0.121 [+0.117, +0.125]
+  human-human  within 0.050  cross 0.002 [0.002, 0.003]  excess +0.048 [+0.045, +0.050]
+  AI-AI excess minus human excess: +0.073 [+0.069, +0.078]
+
+== mean 4-gram Jaccard
+  AI-AI        within 0.205  cross 0.033 [0.032, 0.034]  excess +0.172 [+0.171, +0.174]
+  human-human  within 0.111  cross 0.027 [0.027, 0.028]  excess +0.083 [+0.081, +0.085]
+  AI-AI excess minus human excess: +0.089 [+0.087, +0.092]
+
+== source Jaccard
+  AI-AI        within 0.171  cross 0.001 [0.001, 0.002]  excess +0.170 [+0.167, +0.172]
+  human-human  within 0.156  cross 0.003 [0.002, 0.004]  excess +0.153 [+0.149, +0.157]
+  AI-AI excess minus human excess: +0.016 [+0.011, +0.022]
