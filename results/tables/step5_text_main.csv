@@ -1,0 +1,5 @@
+group,share_above_human_top5pct,lo,hi
+AI-AI,0.121,0.1076,0.1356
+human-human,0.05,0.0496,0.05
+AI-human,0.0597,0.0556,0.0636
+fleet-fleet,0.169,0.1498,0.1869

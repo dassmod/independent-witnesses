@@ -57,3 +57,9 @@ The post-weighted, time-matched difference in source Jaccard between AI-AI pairs
   - Check of who the AI writers outside the fleet are. Six writers (6531ED68, 9A4E061C, C08CB980, A09F8A99, 46EF8576, EA7F9E35) post within about one second of each other; they account for 98% of non-fleet AI-AI pairs under one minute. Start dates differ (Sep 2025 to Feb 2026), volumes are small. Same operator or a shared trigger (all respond to the same note requests) cannot be told apart from this data.
   - **(Das)** Decision: these six are NOT merged into one author. The main result stays as defined above. Planned instead: a robustness row without pairs under one minute.
   - The under-1-minute AI-AI line (0.285 vs 0.205 human) is dominated by these six writers and is not used as separate evidence.
+
+- 14 Nov 2026, more post hoc robustness and the secondary measure (computed after the main number was seen; method unchanged):
+  - Without pairs under one minute: Jaccard difference +0.011 [+0.006, +0.015].
+  - Text measure (4-gram Jaccard, threshold from the top 5% of human-human pairs per window): AI-AI pairs above threshold 12.1% pooled [10.8, 13.6]; AI-human 6.0%; fleet-fleet 16.9%. Mean text similarity of AI-AI pairs stays about 0.20 across time windows, human-human falls from 0.118 to 0.093.
+  - Text measure uses all same-language pairs with at least 4 characters of text; links are not required (they are for the source measure).
+  - Reading file for step 8 is built blind (group hidden, key kept separately, gitignored) from the source-measure pair set, gap up to 6 hours.

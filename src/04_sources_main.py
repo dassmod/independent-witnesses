@@ -13,8 +13,10 @@ import duckdb, numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 D, T = ROOT / "data" / "interim", ROOT / "results" / "tables"
 B, SEED = 1000, 20261114
-LANG = sys.argv[1] if len(sys.argv) > 1 else None   # optional: keep only pairs in this language, e.g. "en"
-SUF = f"_{LANG}" if LANG else ""
+ARGS = sys.argv[1:]
+LANG = "en" if "en" in ARGS else None      # optional flag "en": keep only English pairs
+NOMIN = "nomin" in ARGS                    # optional flag "nomin": drop pairs under one minute (robustness)
+SUF = ("_en" if LANG else "") + ("_nomin" if NOMIN else "")
 
 con = duckdb.connect()
 con.execute("SET memory_limit='2GB'; SET temp_directory='" + tempfile.gettempdir() + "/duckdb_tmp'")
@@ -31,7 +33,8 @@ SELECT a.tweetId,
 FROM s a JOIN s b ON a.tweetId = b.tweetId AND a.noteId < b.noteId
                  AND a.participantId <> b.participantId AND a.lang = b.lang
                  {("AND a.lang = '" + LANG + "'") if LANG else ''}
-WHERE abs(a.createdAtMillis - b.createdAtMillis) <= 24 * 3600 * 1000""")
+WHERE abs(a.createdAtMillis - b.createdAtMillis) <= 24 * 3600 * 1000
+  {'AND abs(a.createdAtMillis - b.createdAtMillis) >= 60000' if NOMIN else ''}""")
 con.execute("""
 CREATE TABLE pw AS
 SELECT *, inter * 1.0 / uni AS j, (inter > 0)::INT AS any_shared,
