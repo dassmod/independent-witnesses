@@ -63,3 +63,7 @@ The post-weighted, time-matched difference in source Jaccard between AI-AI pairs
   - Text measure (4-gram Jaccard, threshold from the top 5% of human-human pairs per window): AI-AI pairs above threshold 12.1% pooled [10.8, 13.6]; AI-human 6.0%; fleet-fleet 16.9%. Mean text similarity of AI-AI pairs stays about 0.20 across time windows, human-human falls from 0.118 to 0.093.
   - Text measure uses all same-language pairs with at least 4 characters of text; links are not required (they are for the source measure).
   - Reading file for step 8 is built blind (group hidden, key kept separately, gitignored) from the source-measure pair set, gap up to 6 hours.
+
+- 14 Nov 2026, step 8 (reading) and copies, post hoc:
+  - Das read 27 of the 40 blind pairs; Gemini labeled all 40 with the same three questions and did not open links (judged from URLs and text). Agreement on "same evidence": 17/27. The "obvious vs choice" label is unreliable (systematic disagreement) and is used only descriptively. In high-overlap pairs, human pairs rest on the same evidence more often (Das 7/9, Gemini 14/15) than AI pairs (Das 5/11, Gemini 10/15): AI pairs with a shared link more often share only part of the evidence, which is why "any shared link" overstates dependence and Jaccard is kept as the main measure.
+  - Copies (src/09): near copies (4-gram Jaccard >= 0.8) are 1.16% of human-human pairs, 0.77% of AI-human, 0.05% of AI-AI (post-weighted). AI-AI similarity is not copying; copying sits in the human baseline and is too rare to explain the text gap.

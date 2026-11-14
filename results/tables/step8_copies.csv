@@ -1,0 +1,5 @@
+grp,pairs,exact_n,near_n,exact_pct_postw,near_pct_postw,near_median_gap_min
+AI-AI,34724,10,19,0.02,0.05,0.1
+AI-human,63031,277,452,0.47,0.77,135.5
+fleet-fleet,25834,221,241,0.62,0.7,0.0
+human-human,102924,636,985,0.76,1.16,128.2

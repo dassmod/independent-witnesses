@@ -26,7 +26,8 @@ SELECT a.tweetId, a.noteId, b.noteId, a.participantId, b.participantId,
   a.text, a.urls, b.text, b.urls
 FROM s a JOIN s b ON a.tweetId = b.tweetId AND a.noteId < b.noteId
   AND a.participantId <> b.participantId AND a.lang = b.lang
-WHERE abs(a.createdAtMillis - b.createdAtMillis) <= 6 * 3600 * 1000""").fetchall()
+WHERE abs(a.createdAtMillis - b.createdAtMillis) <= 6 * 3600 * 1000
+ORDER BY a.noteId, b.noteId""").fetchall()   # sorted: the sample must be reproducible
 
 pick = []
 for grp in ("AI-AI", "human-human"):
@@ -35,12 +36,22 @@ for grp in ("AI-AI", "human-human"):
     pick += [(r, "high") for r in random.sample(high, 15)] + [(r, "none") for r in random.sample(low, 5)]
 random.shuffle(pick)
 
+
+QUESTIONS = """**Мои ответы:**
+
+1. Одно доказательство? (да / частично / нет): 
+2. Общий источник очевиден или выбор? (очевиден / выбор / нет общего): 
+3. Источники одной заметки целиком входят в другую? (A в B / B в A / нет): 
+Заметка, только если что-то странное: 
+
+"""
+
 def cut(t, n=450): return t if len(t) <= n else t[:n] + " ..."
 with open(OUT / "pairs_to_read.md", "w") as f, open(OUT / "key.csv", "w", newline="") as k:
     kw = csv.writer(k); kw.writerow(["pair", "group", "sampled_as", "jaccard", "gap_min", "tweetId", "noteA", "noteB", "writerA", "writerB"])
     f.write("# Pairs to read (blind)\n\nTwo notes on the same post, written within 6 hours of each other, same language, both with sources. "
             "Text is lowercased and links are listed separately. Group labels are in key.csv; read first, look at the key after.\n\n"
-            "For each pair, write down: do the two notes rest on the same evidence, or only sound alike? Is a shared source the obvious one for this claim, or a choice?\n")
+            "Answer the questions under each pair, right here in the file. Short answers are enough.\n")
     for n, (r, kind) in enumerate(pick, 1):
         tw, na, nb, pa, pb, gap, lang, grp, j, ta, ua, tb, ub = r
         if random.random() < 0.5: na, nb, pa, pb, ta, tb, ua, ub = nb, na, pb, pa, tb, ta, ub, ua
@@ -48,4 +59,5 @@ with open(OUT / "pairs_to_read.md", "w") as f, open(OUT / "key.csv", "w", newlin
         f.write(f"\n---\n\n## Pair {n}\n\npost: https://x.com/i/status/{tw}  |  gap: {gap:.0f} min  |  language: {lang}\n\n")
         for tag, t, u in (("A", ta, ua), ("B", tb, ub)):
             f.write(f"**Note {tag}:** {cut(t)}\n\nsources {tag}: " + ("  \n".join(u)) + "\n\n")
+        f.write(QUESTIONS)
 print(f"{len(pick)} pairs written to {OUT}/pairs_to_read.md")
