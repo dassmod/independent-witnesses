@@ -125,7 +125,7 @@ else:                                                                         # 
     dark = np.clip((PAPER - g) / (PAPER - INK), 0, 1)
     grain = Image.fromarray(np.clip(pr.normal(128, 60, (Hh, Ww)), 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
     grain = np.asarray(grain).astype(np.float32) / 255
-    dark = np.clip(dark * 1.2, 0, 1) * (0.8 + 0.2 * np.clip(grain * 1.4 - 0.2, 0, 1)) * 0.88   # graphite: never black, a little paper tooth
+    dark = np.clip(dark * 1.2, 0, 1) * (0.8 + 0.2 * np.clip(grain * 1.4 - 0.2, 0, 1)) * 0.97   # graphite: never black, a little paper tooth
     yy2, xx2 = np.mgrid[0:Hh, 0:Ww].astype(np.float32)
     for _ in range(4):                                                       # eraser marks: lines faded where something was rubbed out
         cx, cy = pr.uniform(0.05, 0.6) * Ww, pr.uniform(0.15, 0.95) * Hh; rx, ry = pr.uniform(40, 110), pr.uniform(18, 40); th = pr.uniform(0, np.pi)
@@ -139,8 +139,8 @@ else:                                                                         # 
     dark = np.clip(dark + smudge * (0.6 + 0.4 * grain), 0, 1)
     del yy2, xx2
     mott = np.asarray(Image.fromarray(np.clip(pr.normal(128, 40, (Hh // 40, Ww // 40)), 0, 255).astype(np.uint8)).resize((Ww, Hh), Image.BICUBIC)).astype(np.float32) / 255
-    paper = np.array([241, 238, 231], float)[None, None, :] * (0.985 + 0.03 * mott[..., None]) + pr.normal(0, 1.6, (Hh, Ww, 1))
-    graphite = np.array([62, 62, 66], float)
+    paper = np.array([252, 251, 248], float)[None, None, :] * (0.985 + 0.03 * mott[..., None]) + pr.normal(0, 1.6, (Hh, Ww, 1))
+    graphite = np.array([16, 16, 18], float)
     rgb = paper * (1 - dark[..., None]) + graphite * dark[..., None]
     streak = np.asarray(Image.fromarray(np.clip(pr.normal(128, 50, (Hh, Ww // 6)), 0, 255).astype(np.uint8)).resize((Ww, Hh), Image.BICUBIC)).astype(np.float32) / 255
     hm = m * (0.78 + 0.22 * streak[..., None])                              # marker strokes leave uneven ink
@@ -156,6 +156,6 @@ k1 = np.minimum(k0 + 1, len(levels) - 1)
 stack = np.stack(levels)                                          # (L, H, W, 3)
 hh, ww = np.indices(k0.shape)
 blurred = stack[k0, hh, ww] * (1 - fr) + stack[k1, hh, ww] * fr
-FROST = 250 if STYLE == "ink" else np.array([243, 240, 234], float)
+FROST = 250 if STYLE == "ink" else np.array([252, 251, 249], float)
 final = blurred + (FROST - blurred) * (0.82 * u ** 0.55)[..., None]   # lightening runs ahead of the blur, so the middle of the fade stays light
 Image.fromarray(np.clip(final, 0, 255).astype(np.uint8)).save("cover_bg.png" if STYLE == "ink" else "cover_pencil_bg.png")
