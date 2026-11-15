@@ -22,11 +22,12 @@ def grid_lines(color, width):                                                # t
         y = k * h; d.line([(0, y), (TW, y)], fill=color, width=width)
         for sgn in (1, -1):
             x = k * a; d.line([(x, 0), (x + sgn * TW / np.sqrt(3), TW)], fill=color, width=width)
-grid_lines(PAPER, 19)                       # a clear strip either side, so the line reads against the hatching
+grid_lines(PAPER, 13)                       # a clear strip either side, so the line reads against the hatching
 grid_lines(INK, 6)
 rng = np.random.default_rng(15)
-INSETS = np.array([7.0, 24.0, 44.0]); PROB = [0.32, 0.46, 0.22]   # tight to the line, normal, wide hatched channel
-def rounded(tri, grow, ins):
+INSETS = np.array([3.0, 7.0, 14.0, 30.0]); PROB = [0.38, 0.27, 0.23, 0.12]   # on the line, close, narrow channel, the occasional wide one
+RADII = np.array([22.0, 40.0, 62.0]); RPROB = [0.3, 0.45, 0.25]                # some corners nearly sharp, some very round
+def rounded(tri, grow, ins, rc):
     """Rounded triangle inside tri, each edge pulled in by its own inset (ins[k] for edge k -> k+1)."""
     c = np.mean(tri, axis=0); P = [np.array(p, float) for p in tri]; lines = []
     for k in range(3):
@@ -46,11 +47,11 @@ def rounded(tri, grow, ins):
             pts.append(tuple(p + n * (rc + grow)))
     hull = sorted(pts, key=lambda p: np.arctan2(p[1] - cc[1], p[0] - cc[0]))
     return hull, inner
-def draw_tile(dr, tri, fill, ins):
-    hull, inner = rounded(tri, sw, ins)
+def draw_tile(dr, tri, fill, ins, rc):
+    hull, inner = rounded(tri, sw, ins, rc)
     dr.polygon(hull, fill=INK)
     for p in inner: dr.ellipse([p[0] - rc - sw, p[1] - rc - sw, p[0] + rc + sw, p[1] + rc + sw], fill=INK)
-    hull, inner = rounded(tri, 0, ins)
+    hull, inner = rounded(tri, 0, ins, rc)
     dr.polygon(hull, fill=fill)
     for p in inner: dr.ellipse([p[0] - rc, p[1] - rc, p[0] + rc, p[1] + rc], fill=fill)
 # perspective: output corners map to a quad on the flat texture (near bottom right, far top left)
@@ -70,9 +71,9 @@ NEON_TILES = {(best[0], best[1], 0), (best[0], best[1], 1)}           # an up an
 neon_mask = Image.new("L", (TW, TW), 0); dn_ = ImageDraw.Draw(neon_mask)
 for i, j, o, tri in tiles:
     if all(-a < p[0] < TW + a and -a < p[1] < TW + a for p in tri):
-        ins = rng.choice(INSETS, 3, p=PROB)
-        draw_tile(d, tri, PAPER, ins)
-        if (i, j, o) in NEON_TILES: draw_tile(dn_, tri, 255, ins)
+        ins = rng.choice(INSETS, 3, p=PROB); rcv = rng.choice(RADII, p=RPROB)
+        draw_tile(d, tri, PAPER, ins, rcv)
+        if (i, j, o) in NEON_TILES: draw_tile(dn_, tri, 255, ins, rcv)
 out = tex.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
 nm = neon_mask.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
 g = np.asarray(out).astype(np.float32)
