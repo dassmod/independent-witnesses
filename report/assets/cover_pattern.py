@@ -2,14 +2,24 @@
 """Cover background: rounded triangular tiles on a triangular grid, hatched channels between them,
 seen in perspective (after the reference photo). Two tiles that share an edge are neon.
 The text column is frosted (blurred and lightened). Deterministic."""
-import numpy as np
+import numpy as np, sys
+STYLE = sys.argv[1] if len(sys.argv) > 1 else "ink"   # "ink" or "pencil"
 from PIL import Image, ImageDraw, ImageFilter
 TW = 7200                                   # flat texture size (px)
 a = 420.0; h = a * np.sqrt(3) / 2           # triangle side and height
 inset, rc, sw = 24.0, 50.0, 5.0             # gap from the grid line, corner radius, outline width
 PAPER, INK, NEON = 246, 18, (0xEA, 0xFF, 0x3D)
 tex = Image.new("L", (TW, TW), PAPER); d = ImageDraw.Draw(tex)
-for x in range(0, TW, 9): d.line([(x, 0), (x, TW)], fill=INK, width=3)          # one hatch direction, like an engraving
+_hr = np.random.default_rng(5)
+for x in range(0, TW, 9):                                                    # one hatch direction, like an engraving
+    if STYLE == "ink":
+        d.line([(x, 0), (x, TW)], fill=INK, width=3)
+    else:                                                                     # pencil: each stroke its own pressure, with breaks and a slight lean
+        y = 0
+        while y < TW:
+            L = _hr.uniform(120, 900); v = int(_hr.uniform(INK, 110)); lean = _hr.normal(0, 4)
+            d.line([(x + _hr.normal(0, 0.8), y), (x + lean, y + L)], fill=v, width=int(_hr.choice([2, 3, 3])))
+            y += L + _hr.uniform(0, 60)
 tiles = []
 for j in range(-1, int(TW / h) + 2):
     for i in range(-2, int(TW / a) + 3):
@@ -67,13 +77,27 @@ def to_tex(x, y):
     return ((coef[0] * x + coef[1] * y + coef[2]) / den, (coef[3] * x + coef[4] * y + coef[5]) / den)
 TX, TY = to_tex(560 * Z, 590 * Z)                                     # target on the cover: left third, lower third
 best = min(((np.hypot(*(np.mean(tri, axis=0) - [TX, TY])), (i, j, o)) for i, j, o, tri in tiles if o == 0))[1]
-NEON_TILES = {(best[0], best[1], 0), (best[0], best[1], 1)}           # an up and a down triangle that share an edge
+apex = next(tri for i, j, o, tri in tiles if (i, j, o) == best)[2]            # the up tile's top vertex
+above = min(((np.hypot(*(np.array(tri[2]) - apex)), (i, j, o)) for i, j, o, tri in tiles if o == 1))[1]
+NEON_TILES = {best, above}                                                    # two tiles that meet at one point
 neon_mask = Image.new("L", (TW, TW), 0); dn_ = ImageDraw.Draw(neon_mask)
 for i, j, o, tri in tiles:
     if all(-a < p[0] < TW + a and -a < p[1] < TW + a for p in tri):
         ins = rng.choice(INSETS, 3, p=PROB); rcv = rng.choice(RADII, p=RPROB)
         draw_tile(d, tri, PAPER, ins, rcv)
         if (i, j, o) in NEON_TILES: draw_tile(dn_, tri, 255, ins, rcv)
+if STYLE == "pencil":                                                          # a hand's wobble: smooth displacement of the flat drawing
+    import cv2
+    wr = np.random.default_rng(9)
+    def field(cells, amp):
+        f = wr.normal(0, 1, (cells, cells)).astype(np.float32)
+        return cv2.resize(f, (TW, TW), interpolation=cv2.INTER_CUBIC) * amp
+    dx = field(48, 5.0) + field(360, 1.2); dy = field(48, 5.0) + field(360, 1.2)
+    gx, gy = np.meshgrid(np.arange(TW, dtype=np.float32), np.arange(TW, dtype=np.float32))
+    tex = Image.fromarray(cv2.remap(np.asarray(tex), gx + dx, gy + dy, cv2.INTER_LINEAR, borderValue=PAPER))
+    dxn = field(30, 9.0); dyn = field(30, 9.0)                                # the highlighter is looser than the pencil
+    neon_mask = Image.fromarray(cv2.remap(np.asarray(neon_mask), gx + dxn, gy + dyn, cv2.INTER_LINEAR, borderValue=0))
+    del gx, gy, dx, dy, dxn, dyn
 out = tex.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
 nm = neon_mask.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
 g = np.asarray(out).astype(np.float32)
@@ -81,12 +105,27 @@ g = np.asarray(out).astype(np.float32)
 yy, xx = np.mgrid[0:H * 2, 0:W * 2].astype(np.float32)
 far = np.clip(1 - (xx / (W * 2) * 0.55 + yy / (H * 2) * 0.75), 0, 1) ** 1.6
 g = g + (PAPER - g) * (0.85 * far)
-rgb = np.repeat(g[..., None], 3, axis=2)
 m = (np.asarray(nm).astype(np.float32) / 255)[..., None]
-rgb = rgb * (1 - m) + np.array(NEON, float) * m
-Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).save("pattern.png")
+if STYLE == "ink":
+    rgb = np.repeat(g[..., None], 3, axis=2)
+    rgb = rgb * (1 - m) + np.array(NEON, float) * m
+else:                                                                         # graphite on paper, highlighter on top
+    pr = np.random.default_rng(21); Hh, Ww = g.shape
+    dark = np.clip((PAPER - g) / (PAPER - INK), 0, 1)
+    grain = Image.fromarray(np.clip(pr.normal(128, 60, (Hh, Ww)), 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
+    grain = np.asarray(grain).astype(np.float32) / 255
+    dark = np.clip(dark * 1.25, 0, 1) * (0.62 + 0.38 * np.clip(grain * 1.4 - 0.2, 0, 1)) * 0.9   # graphite never reaches black, and breaks a little on the paper tooth
+    mott = np.asarray(Image.fromarray(np.clip(pr.normal(128, 40, (Hh // 40, Ww // 40)), 0, 255).astype(np.uint8)).resize((Ww, Hh), Image.BICUBIC)).astype(np.float32) / 255
+    paper = np.array([241, 238, 231], float)[None, None, :] * (0.985 + 0.03 * mott[..., None]) + pr.normal(0, 1.6, (Hh, Ww, 1))
+    graphite = np.array([62, 62, 66], float)
+    rgb = paper * (1 - dark[..., None]) + graphite * dark[..., None]
+    streak = np.asarray(Image.fromarray(np.clip(pr.normal(128, 50, (Hh, Ww // 6)), 0, 255).astype(np.uint8)).resize((Ww, Hh), Image.BICUBIC)).astype(np.float32) / 255
+    hm = m * (0.78 + 0.22 * streak[..., None])                              # marker strokes leave uneven ink
+    rgb = rgb * (1 - hm) + rgb * (np.array(NEON, float) / 255) * hm * 1.02 + np.array(NEON, float) * hm * 0.0
+    rgb = np.where(hm > 0, rgb * (1 - 0.35 * hm) + np.array(NEON, float) * 0.35 * hm, rgb)
+Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).save(f"pattern_{STYLE}.png")
 # frosted text column: blur and lightening both grow smoothly from left to right
-base = Image.open("pattern.png"); B0 = np.asarray(base).astype(np.float32)
+base = Image.open(f"pattern_{STYLE}.png"); B0 = np.asarray(base).astype(np.float32)
 levels = [B0] + [np.asarray(base.filter(ImageFilter.GaussianBlur(rad))).astype(np.float32) for rad in (6, 14, 26, 40)]
 u = np.clip((xx / (W * 2) - 0.46) / (0.74 - 0.46), 0, 1); u = u ** 3 * (u * (u * 6 - 15) + 10)   # smootherstep
 pos = u * (len(levels) - 1); k0 = np.floor(pos).astype(int); fr = (pos - k0)[..., None]
@@ -94,5 +133,6 @@ k1 = np.minimum(k0 + 1, len(levels) - 1)
 stack = np.stack(levels)                                          # (L, H, W, 3)
 hh, ww = np.indices(k0.shape)
 blurred = stack[k0, hh, ww] * (1 - fr) + stack[k1, hh, ww] * fr
-final = blurred + (250 - blurred) * (0.82 * u ** 0.55)[..., None]   # lightening runs ahead of the blur, so the middle of the fade stays light
-Image.fromarray(np.clip(final, 0, 255).astype(np.uint8)).save("cover_bg.png")
+FROST = 250 if STYLE == "ink" else np.array([243, 240, 234], float)
+final = blurred + (FROST - blurred) * (0.82 * u ** 0.55)[..., None]   # lightening runs ahead of the blur, so the middle of the fade stays light
+Image.fromarray(np.clip(final, 0, 255).astype(np.uint8)).save("cover_bg.png" if STYLE == "ink" else "cover_pencil_bg.png")
