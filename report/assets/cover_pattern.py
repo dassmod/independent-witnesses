@@ -14,12 +14,13 @@ _hr = np.random.default_rng(5)
 for x in range(0, TW, 9):                                                    # one hatch direction, like an engraving
     if STYLE == "ink":
         d.line([(x, 0), (x, TW)], fill=INK, width=3)
-    else:                                                                     # pencil: each stroke its own pressure, with breaks and a slight lean
+    else:                                                                     # pencil, ruled: straight, but pressure and spacing vary a little
+        xx_ = x + _hr.normal(0, 1.1); v = int(_hr.uniform(INK, 95)); wd = int(_hr.choice([2, 3, 3]))
         y = 0
         while y < TW:
-            L = _hr.uniform(120, 900); v = int(_hr.uniform(INK, 110)); lean = _hr.normal(0, 4)
-            d.line([(x + _hr.normal(0, 0.8), y), (x + lean, y + L)], fill=v, width=int(_hr.choice([2, 3, 3])))
-            y += L + _hr.uniform(0, 60)
+            L = _hr.uniform(1500, 6000) if _hr.random() < 0.85 else _hr.uniform(200, 900)
+            d.line([(xx_, y), (xx_ + _hr.normal(0, 0.4), y + L)], fill=v, width=wd)
+            y += L + (_hr.uniform(6, 40) if _hr.random() < 0.5 else 0)
 tiles = []
 for j in range(-1, int(TW / h) + 2):
     for i in range(-2, int(TW / a) + 3):
@@ -34,6 +35,13 @@ def grid_lines(color, width):                                                # t
             x = k * a; d.line([(x, 0), (x + sgn * TW / np.sqrt(3), TW)], fill=color, width=width)
 grid_lines(PAPER, 13)                       # a clear strip either side, so the line reads against the hatching
 grid_lines(INK, 6)
+if STYLE == "pencil":                                                        # light guide lines left from the construction
+    _cr = np.random.default_rng(12)
+    for _ in range(26):
+        k = _cr.uniform(-TW / h, 2 * TW / h); fam = _cr.integers(3); off = _cr.uniform(0.2, 0.8)
+        if fam == 0: y = (k + off) * h; d.line([(0, y), (TW, y)], fill=212, width=2)
+        else:
+            x = (k + off) * a; sg = 1 if fam == 1 else -1; d.line([(x, 0), (x + sg * TW / np.sqrt(3), TW)], fill=212, width=2)
 rng = np.random.default_rng(15)
 INSETS = np.array([3.0, 7.0, 14.0, 30.0]); PROB = [0.38, 0.27, 0.23, 0.12]   # on the line, close, narrow channel, the occasional wide one
 RADII = np.array([22.0, 40.0, 62.0]); RPROB = [0.3, 0.45, 0.25]                # some corners nearly sharp, some very round
@@ -57,10 +65,11 @@ def rounded(tri, grow, ins, rc):
             pts.append(tuple(p + n * (rc + grow)))
     hull = sorted(pts, key=lambda p: np.arctan2(p[1] - cc[1], p[0] - cc[0]))
     return hull, inner
-def draw_tile(dr, tri, fill, ins, rc):
+def draw_tile(dr, tri, fill, ins, rc, ink=None):
+    ink = INK if ink is None else ink
     hull, inner = rounded(tri, sw, ins, rc)
-    dr.polygon(hull, fill=INK)
-    for p in inner: dr.ellipse([p[0] - rc - sw, p[1] - rc - sw, p[0] + rc + sw, p[1] + rc + sw], fill=INK)
+    dr.polygon(hull, fill=ink)
+    for p in inner: dr.ellipse([p[0] - rc - sw, p[1] - rc - sw, p[0] + rc + sw, p[1] + rc + sw], fill=ink)
     hull, inner = rounded(tri, 0, ins, rc)
     dr.polygon(hull, fill=fill)
     for p in inner: dr.ellipse([p[0] - rc, p[1] - rc, p[0] + rc, p[1] + rc], fill=fill)
@@ -84,6 +93,8 @@ neon_mask = Image.new("L", (TW, TW), 0); dn_ = ImageDraw.Draw(neon_mask)
 for i, j, o, tri in tiles:
     if all(-a < p[0] < TW + a and -a < p[1] < TW + a for p in tri):
         ins = rng.choice(INSETS, 3, p=PROB); rcv = rng.choice(RADII, p=RPROB)
+        if STYLE == "pencil" and rng.random() < 0.16:                        # traced twice, the second pass a hair off
+            off = rng.normal(0, 2.2, 2); draw_tile(d, [(p[0] + off[0], p[1] + off[1]) for p in tri], PAPER, ins, rcv, ink=int(rng.uniform(70, 140)))
         draw_tile(d, tri, PAPER, ins, rcv)
         if (i, j, o) in NEON_TILES: draw_tile(dn_, tri, 255, ins, rcv)
 if STYLE == "pencil":                                                          # a hand's wobble: smooth displacement of the flat drawing
@@ -92,10 +103,10 @@ if STYLE == "pencil":                                                          #
     def field(cells, amp):
         f = wr.normal(0, 1, (cells, cells)).astype(np.float32)
         return cv2.resize(f, (TW, TW), interpolation=cv2.INTER_CUBIC) * amp
-    dx = field(48, 5.0) + field(360, 1.2); dy = field(48, 5.0) + field(360, 1.2)
+    dx = field(48, 0.0); dy = field(48, 0.0)
     gx, gy = np.meshgrid(np.arange(TW, dtype=np.float32), np.arange(TW, dtype=np.float32))
     tex = Image.fromarray(cv2.remap(np.asarray(tex), gx + dx, gy + dy, cv2.INTER_LINEAR, borderValue=PAPER))
-    dxn = field(30, 9.0); dyn = field(30, 9.0)                                # the highlighter is looser than the pencil
+    dxn = field(30, 3.0); dyn = field(30, 3.0)                                # the highlighter is looser than the pencil
     neon_mask = Image.fromarray(cv2.remap(np.asarray(neon_mask), gx + dxn, gy + dyn, cv2.INTER_LINEAR, borderValue=0))
     del gx, gy, dx, dy, dxn, dyn
 out = tex.transform((W * Z, H * Z), Image.PERSPECTIVE, tuple(coef), Image.BICUBIC).resize((W * 2, H * 2), Image.LANCZOS)
@@ -114,7 +125,19 @@ else:                                                                         # 
     dark = np.clip((PAPER - g) / (PAPER - INK), 0, 1)
     grain = Image.fromarray(np.clip(pr.normal(128, 60, (Hh, Ww)), 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))
     grain = np.asarray(grain).astype(np.float32) / 255
-    dark = np.clip(dark * 1.25, 0, 1) * (0.62 + 0.38 * np.clip(grain * 1.4 - 0.2, 0, 1)) * 0.9   # graphite never reaches black, and breaks a little on the paper tooth
+    dark = np.clip(dark * 1.2, 0, 1) * (0.8 + 0.2 * np.clip(grain * 1.4 - 0.2, 0, 1)) * 0.88   # graphite: never black, a little paper tooth
+    yy2, xx2 = np.mgrid[0:Hh, 0:Ww].astype(np.float32)
+    for _ in range(4):                                                       # eraser marks: lines faded where something was rubbed out
+        cx, cy = pr.uniform(0.05, 0.6) * Ww, pr.uniform(0.15, 0.95) * Hh; rx, ry = pr.uniform(40, 110), pr.uniform(18, 40); th = pr.uniform(0, np.pi)
+        X_ = (xx2 - cx) * np.cos(th) + (yy2 - cy) * np.sin(th); Y_ = -(xx2 - cx) * np.sin(th) + (yy2 - cy) * np.cos(th)
+        dark *= 1 - 0.45 * np.exp(-(X_ / rx) ** 2 - (Y_ / ry) ** 2)
+    smudge = np.zeros_like(dark)
+    for _ in range(5):                                                       # graphite smudges from the side of a hand
+        cx, cy = pr.uniform(0.05, 0.62) * Ww, pr.uniform(0.1, 0.95) * Hh; rx, ry = pr.uniform(80, 220), pr.uniform(25, 60); th = pr.uniform(-0.6, 0.6)
+        X_ = (xx2 - cx) * np.cos(th) + (yy2 - cy) * np.sin(th); Y_ = -(xx2 - cx) * np.sin(th) + (yy2 - cy) * np.cos(th)
+        smudge += 0.06 * np.exp(-(X_ / rx) ** 2 - (Y_ / ry) ** 2)
+    dark = np.clip(dark + smudge * (0.6 + 0.4 * grain), 0, 1)
+    del yy2, xx2
     mott = np.asarray(Image.fromarray(np.clip(pr.normal(128, 40, (Hh // 40, Ww // 40)), 0, 255).astype(np.uint8)).resize((Ww, Hh), Image.BICUBIC)).astype(np.float32) / 255
     paper = np.array([241, 238, 231], float)[None, None, :] * (0.985 + 0.03 * mott[..., None]) + pr.normal(0, 1.6, (Hh, Ww, 1))
     graphite = np.array([62, 62, 66], float)
