@@ -1,29 +1,48 @@
-<!-- DRAFT written by Claude from the results in results/tables and docs/decisions.md.
-     Das: rewrite in your own words before it goes into the official Apart template.
-     Limit: 8 pages without references and appendices. Marked TODO items are yours. -->
+<!-- Report text. Abstract, Introduction, 4.5, Discussion, Conclusion and Appendix A: written by Das in Russian,
+     translated by Claude. Related work, Methods, Results: Claude's draft checked by Das.
+     Rendered to report/Two-Notes-One-Witness.pdf by report/build/build_report.py. -->
 
 # Two Notes, One Witness: Concentration and Resemblance among AI Note Writers on Community Notes
 
-Dastan Modubash, independent. With Apart Research.
-<!-- TODO title is a proposal; the same title replaces earlier submissions. -->
+Dastan Modubash, Independent. With Apart Research.
 
 ## Abstract
 
-Community Notes shows a fact-checking note only when raters who usually disagree both find it helpful. That design tests the independence of raters. It does not test the independence of writers, and since September 2025 writers include AI systems that now submit more than half of new notes. Using X's public data up to 12 November 2026, we ask whether two AI-written notes on the same post are more alike than two human-written notes, with human pairs matched on time gap and every post weighted equally. Methods and refutation criteria were committed before results. Three findings. First, six AI accounts behave as one system and wrote 51% of all notes shown to readers from April to November 2026; on 34% of covered posts nobody else wrote a note. Second, AI writers from different operators share sources only slightly more than humans (Jaccard difference +0.015, 95% CI [+0.010, +0.020]). Third, their wording is far more alike: 12.1% of AI pairs exceed the similarity that only 5% of human pairs reach. This is neither copying nor house style, since AI notes on different posts are not alike. Two preregistered predictions failed: AI notes do not share rating outcomes more than human notes, and similarity has not grown over time. The crowd on the writing side has become concentrated, and nothing in the system reports it.
+Community Notes shows a note to everyone only if it was rated helpful by people who usually argue with each other. But what it checks is the independence of those who rate. Nobody checks those who write. And since September 2025 the writers include AI programs, which now submit more than half of new notes.
+
+We took X's public data up to 12 November 2026 and asked a question. If two AIs wrote a note on the same post, are those notes more alike than two notes written by people? Human pairs were matched on time gap. We fixed the method, and what would refute us, before we saw any results.
+
+First. Six AI accounts behave as one system. From April to November 2026 they wrote 51% of all notes that readers saw. And on 34% of covered posts, nobody else wrote anything.
+
+Second. AI writers from different operators use shared sources only slightly more often than people (Jaccard difference +0.015, 95% CI [+0.010, +0.020]).
+
+Third. Their words are much closer. 12.1% of AI pairs cross a similarity threshold that only 5% of human pairs reach. This is not copying, and not a shared style. Why? Because AI notes on different posts are not alike.
+
+Two predictions we registered in advance did not hold. AI notes do not share rating outcomes more often than human notes. And similarity is not growing over time.
+
+The crowd on the writing side has become concentrated. And nothing in the system reports it.
 
 ## 1. Introduction
 
-Agreement between witnesses is evidence only to the extent that they are independent. Condorcet's jury theorem makes the condition explicit [12]: a majority beats an individual only if the jurors err independently.
+Agreement between witnesses proves something only if the witnesses are independent. The idea is old. Condorcet's jury theorem says it plainly [12]: a majority beats an individual only if the jurors err independently of each other.
 
-Community Notes builds on this. Its bridging algorithm displays a note when raters with different rating histories agree that it helps [1]. The independence check sits on the rating side. Writers were never checked, because they were scattered volunteers.
+This is what Community Notes stands on. The bridging algorithm shows a note when raters with different rating histories find it helpful [1]. So independence is checked. But only for raters. Nobody has ever checked the writers. And why would they? They were scattered volunteers, each on their own.
 
-In September 2025 X opened the system to AI note writers: enrolled programs that read a feed of posts for which users requested a note, and submit notes without a human in the loop [5]. By May 2026 they wrote 41% of submitted notes and 52% of helpful ones [2]. Earlier studies measured the helpfulness, speed and sourcing of AI notes [2, 3, 4]. None compared AI writers with each other; Gong and Wu list "writer diversity and governance" as future work and note that similar helpfulness rates across writers may reflect "similar design choices", untested [2].
+In September 2025 X let AI writers into the system [5]. These are registered programs. They read a feed of posts where users asked for a note, and submit notes themselves, with no human involved. By May 2026 they were already writing 41% of submitted notes and 52% of helpful ones [2].
 
-Writer independence matters even though writers do not vote. A second note that repeats the first reads as corroboration to raters and readers. Coverage that rests on few writers inherits their blind spots together. And language models err together: when two models are both wrong they choose the same wrong answer about 60% of the time [6].
+Earlier work measured how helpful AI notes are, how fast, and what they cite [2, 3, 4]. But nobody compared AI writers with each other. Gong and Wu themselves name "writer diversity and governance" as future work [2]. And they note that similar helpfulness rates across writers may point to "similar design choices". Only nobody has tested this.
 
-**Contributions.** (1) A descriptive finding: six AI accounts act as one system and write about half of all shown notes. (2) A preregistered comparison of AI-AI and human-human note pairs on the same post, for shared sources and shared wording, with controls for time, post size and operator. (3) A cross-post baseline that separates shared style from shared content. (4) Two preregistered negative results that bound the claim. (5) Open code and tables.
+You could ask: what does it matter, writers don't vote? It matters, and in three places. A second note that repeats the first looks like confirmation to a rater and a reader. Coverage that rests on a few writers gets all their blind spots at once. And language models make mistakes together: when two models are both wrong, they pick the same wrong answer about 60% of the time [6].
 
-## 2. Related work
+**What we did.**
+
+1. We showed that six AI accounts work as one system and write about half of all shown notes.
+2. We compared AI-AI and human-human pairs on the same post, by shared sources and by shared words. The comparison was registered in advance, and time, post size and operator are controlled for.
+3. We added a cross-post baseline. It separates shared style from shared content.
+4. We report two preregistered negative results. They limit our claim, and we don't hide them.
+5. We opened the code and the tables.
+
+## 2. Related Work
 
 **Community Notes.** Wojcik et al. describe the bridging algorithm and its effect on readers [1]. Mohammadi et al. find that about 8% of notes reach helpful status and that helpful notes arrive late [7]; Chuai et al. find no platform-wide drop in engagement with misleading posts [8].
 
@@ -33,7 +52,7 @@ Writer independence matters even though writers do not vote. A second note that 
 
 **Own prior work.** In an earlier Apart sprint we found that a monitor counting agreeing agents cannot tell agreement from shared origin (swarm-canaries). The link is conceptual; no code is reused.
 
-## 3. Methodology
+## 3. Methods
 
 ### 3.1 Data
 
@@ -49,17 +68,17 @@ A pair is two notes on the same post by different authors, in the same language 
 
 Three things make notes look alike for reasons unrelated to shared models, and each has a control:
 
-- **One system under several names.** Fleet counted as one author.
+- **One system under several names.** The fleet is counted as one author.
 - **Time.** Median gap is 0.6 h for AI-AI pairs and 4.6 h for human pairs. We compare inside three windows (under 1 h, 1 to 6 h, 6 to 24 h) and reweight human windows to the AI-AI time profile.
 - **Viral posts.** A post with n notes yields n(n-1)/2 pairs; 13.7% of human pairs come from posts with ten or more notes. Each pair gets weight 1 / (pairs of its group on that post).
 
 ### 3.4 Measures
 
-**Sources (main).** URLs are normalized (host case, `www`, fragments, tracking parameters; YouTube video ids kept). Links to the post itself, search pages, `share.google` and X policy pages are dropped. Per pair: Jaccard overlap of the two URL sets, for pairs where both notes keep a link. Secondary: at least one shared URL, which is inflated when notes carry more links (fleet 2.4 per note, other AI 1.7, humans 1.4).
+**Sources (main).** URLs are normalized (host case, `www`, fragments, tracking parameters; YouTube video ids kept). Links to the post itself, search pages, `share.google` and X policy pages are dropped. Per pair: Jaccard overlap [10] of the two URL sets, for pairs where both notes keep a link. Secondary: at least one shared URL, which is inflated when notes carry more links (fleet 2.4 per note, other AI 1.7, humans 1.4).
 
 **Text (secondary).** Jaccard overlap of character 4-gram sets, links removed. Headline: the share of AI-AI pairs above the similarity that only the top 5% of human pairs in the same window exceed. Under human-like independence this is 5%.
 
-**Uncertainty.** Cluster bootstrap over posts, 1,000 resamples, because pairs from one post are not independent.
+**Uncertainty.** Cluster bootstrap over posts [11], 1,000 resamples, because pairs from one post are not independent.
 
 ### 3.5 Preregistration
 
@@ -67,7 +86,7 @@ All choices above, and the criterion "the 95% interval of the Jaccard difference
 
 ### 3.6 Reading pairs
 
-To interpret a disagreement between the two source measures, 40 pairs were sampled (30 with Jaccard at least 0.5, 10 with none; half AI-AI, half human) and presented blind. The author labelled 27; a Gemini model <!-- TODO exact version --> labelled all 40 with the same three questions and no context. The model did not open links.
+To interpret a disagreement between the two source measures, 40 pairs were sampled (30 with Jaccard at least 0.5, 10 with none; half AI-AI, half human) and presented blind. The author labelled 27; a Gemini model (Gemini 4 Hydrogen, thinking level High) labelled all 40 with the same three questions and no context. The model did not open links.
 
 ## 4. Results
 
@@ -83,6 +102,8 @@ Of 54,974 posts with a shown note in that period, all shown notes came from the 
 
 ### 4.2 Sources: a small difference
 
+*Table 1. Source overlap of note pairs on the same post. Post-weighted; human pairs reweighted to the AI-AI time profile. 95% CI from a cluster bootstrap over posts.*
+
 | Group | Pairs | Jaccard | At least one shared link |
 |---|---|---|---|
 | AI-AI, different operators | 34,393 | 0.171 | 40.1% |
@@ -96,9 +117,7 @@ The two measures disagree. Reading explains why (Section 4.5).
 
 ### 4.3 Text: a large difference
 
-![Figure 2](../results/figures/fig2_same_post_vs_cross_post.png)
-
-*Figure 2. Share of note pairs more alike in wording than the most similar 5% of human pairs on the same post (human rate is 5% by construction). Blue: two notes on the same post. Orange: two notes on different posts, same day and language. AI-AI: different operators. 95% CI from a cluster bootstrap over posts. Sources: `step5_text_main.csv`, `extD_cross_post.csv`.*
+*Table 2. Text similarity of note pairs on the same post. The bar is the 4-gram overlap that only the top 5% of human pairs in the same time window exceed.*
 
 | Group | Pairs above the human top-5% bar | Mean 4-gram overlap, under 1 h / 1 to 6 h / 6 to 24 h |
 |---|---|---|
@@ -108,6 +127,10 @@ The two measures disagree. Reading explains why (Section 4.5).
 | Fleet-fleet | 16.9% [15.0, 18.7] | 0.255 / 0.205 / 0.219 |
 
 AI notes resemble each other, not human notes, and unlike human pairs they do not drift apart with time.
+
+![Figure 2](../results/figures/fig2_same_post_vs_cross_post.png)
+
+*Figure 2. Share of note pairs more alike in wording than the most similar 5% of human pairs on the same post (the human rate is 5% by construction). Two notes on the same post against two notes on different posts, same day and language. AI-AI: different operators. 95% CI from a cluster bootstrap over posts. Sources: `step5_text_main.csv`, `extD_cross_post.csv`.*
 
 **Not copying.** Near copies (overlap at least 0.8) are 1.16% of human pairs and 0.05% of AI-AI pairs.
 
@@ -121,9 +144,17 @@ AI notes resemble each other, not human notes, and unlike human pairs they do no
 
 ### 4.5 Reading
 
-On "same evidence" the author and the model agreed on 17 of 27 pairs. Among high-overlap pairs, human pairs rested on the same evidence more often (author 7/9, model 14/15) than AI pairs (author 5/11, model 10/15): AI pairs with a shared link often share only part of their evidence. This is what "at least one shared link" counts as a full match, and it supports Jaccard as the main measure. A second label (obvious source or a choice) showed systematic disagreement between the two readers and is not used.
+Numbers are numbers, but we wanted to look with our own eyes. I read 27 pairs, and the model read all 40, with the same questions. The main question was simple: do the two notes rest on the same evidence? On the 27 pairs we both read, the model and I agreed on 17.
+
+And here is what shows up. Take the high-overlap pairs. Human pairs like these almost always rested on the same evidence: 7 of 9 for me, 14 of 15 for the model. AI pairs less often: 5 of 11 for me, 10 of 15 for the model. So a shared link in an AI pair often means a match on only part of the evidence, not all of it.
+
+What follows from this? If we counted "at least one shared link" as a full match, we would overstate similarity. That is why Jaccard is our main measure.
+
+There was a second question too: is the source obvious, or was it chosen? Here the model and I disagreed systematically. So we don't use this question.
 
 ### 4.6 Robustness
+
+*Table 3. Main results under alternative choices. Computed on the text-measure pair set, hence +0.014 rather than +0.015 in the first row.*
 
 | Variant | Source difference | AI-AI text above bar |
 |---|---|---|
@@ -134,23 +165,41 @@ On "same evidence" the author and the model agreed on 17 of 27 pairs. Among high
 | Bar at human top 10% | +0.014 | 43.1% (human 10%) |
 | Windows 30 min / 3 h | +0.013 | 11.8% |
 
-(Computed on the text-measure pair set, hence +0.014 rather than +0.015 in the first row.) Conclusions hold. Without the fleet merge the source difference more than triples, so the merge is the conservative choice.
+Conclusions hold. Without the fleet merge the source difference more than triples, so the merge is the conservative choice.
 
-## 5. Discussion
+## 5. Discussion and Limitations
 
-**What changed in the system.** The rating side of Community Notes still requires agreement across a divide. The writing side has become concentrated: one system supplies about half of the shown notes, and for a third of covered posts it is the only writer. This is not a claim that these notes are bad; raters judge them helpful, and most of these posts would otherwise have no note. It is a structural dependence with no signal attached. An error mode of that system, or its withdrawal, would affect a third of coverage at once.
+**What changed in the system.** The rating side stayed as it was: a note still needs agreement from people who usually argue. But the writing side has become concentrated. One system supplies about half of the shown notes. And for a third of covered posts it is the only writer.
 
-**Different evidence, same words.** AI writers from different operators mostly consult different sources, which is good news for independence where it matters most. Yet given the same post they converge on wording 2.4 times as often as humans. The system's design gives a plausible cause: all AI writers read the same feed, answer within minutes [2], may start from the same public template, and run on a few model families. To a rater, two similar notes look like two confirmations.
+Let me say right away, this does not mean the notes are bad. Quite the opposite. Raters find them helpful, and most of these posts would have no note at all without them. The problem is elsewhere. This is a structural dependence, and there is no signal about it. If this system breaks or leaves, a third of coverage disappears at once.
 
-**What it does not show.** No effect on rating outcomes was found, and resemblance is not growing. The claim is about concentration and resemblance, not about harm to accuracy.
+**Different evidence, the same words.** AI writers from different operators mostly go to different sources. And that is good news, because this is exactly where independence matters most. But on the same post their words match 2.4 times as often as people's. Why? The design of the system itself gives a plausible answer. All AI writers read the same feed. They answer within minutes [2]. They may start from the same public template. And they run on a few model families, not dozens. And to a rater, two similar notes look like two confirmations, even though in essence they may be one.
 
-**What could be done.** (a) Publish an operator field for AI writers, so one system is visible as one. (b) Report writer concentration and pair similarity as a standing health metric; our scripts compute both from public data. (c) When routing rater attention [3], treat near-duplicate notes on a post as one candidate.
+**What we did not show.** We found no effect on rating outcomes. And similarity is not growing over time. So our claim is about concentration and resemblance. Not about harm to accuracy.
 
-**Next.** The Ratings file would show how much rater attention goes to redundant AI notes, and whether raters who saw both notes of a pair rate them alike.
+**What can be done.** Three simple things. (a) Publish an operator field for AI writers. Then one system will be visible as one, not as six. (b) Treat writer concentration and pair similarity as a standing health metric of the system. Our scripts already compute both from public data. (c) When rater attention is routed to notes [3], treat near-identical notes on the same post as one candidate.
+
+### Limitations
+
+The full list is in Appendix A.
+
+### Future Work
+
+We need the Ratings file. With it you can see how much rater attention goes to redundant AI notes. And whether raters who saw both notes of a pair give them the same ratings.
+
+## 6. Conclusion
+
+One system writes about half of the notes readers see. AI writers from different operators mostly go to different sources, but on the same post their words match 2.4 times as often as people's. The crowd on the writing side has become concentrated. And nothing in the system reports it.
+
+When machines write most of what we read, counting votes is no longer enough. We need to know how many of them are independent.
+
+## Code and Data
+
+- Code repository: https://github.com/dassmod/independent-witnesses
+- Data: X Community Notes public data, https://communitynotes.x.com/guide/en/under-the-hood/download-data (dump of 12 November 2026). Raw files and note text are not redistributed; the repository holds code and aggregate tables.
 
 ## References
 
-<!-- TODO Das: check every entry against the source before submitting; first names for [2]. -->
 1. Wojcik, S. et al. Birdwatch: Crowd Wisdom and Bridging Algorithms can Inform Understanding and Reduce the Spread of Misinformation. arXiv:2210.15723, 2022.
 2. Gong and Wu. Characterizing AI Fact-Checkers and Their Contributions on Community Notes. arXiv:2605.16566, 2026.
 3. Purnell, S. AI Writers on Community Notes: An Evaluation of Seven Months of Data. R Street Policy Study No. 338, June 2026.
@@ -166,14 +215,30 @@ On "same evidence" the author and the model agreed on 17 of 27 pairs. Among high
 
 ## Appendix A. Limitations and Dual-Use / Ethical Considerations
 
-**What the results do not establish.** No note is shown to be wrong. Shared sources can be the correct sources; the human baseline separates this only in part. The fleet is identified by behaviour (volume, start dates, non-overlapping assignment, timing); one operator is an inference. A second cluster of six AI accounts posting within about a second of each other was not merged, because a shared feed explains its timing. AI status comes from an enrollment snapshot on the download date. Post text is not in the public data, so we could not control for sources already linked in the post. Notes still awaiting ratings make recent months provisional. The reading sample is small, and the labelling model did not open links. Similarity is lexical; paraphrase is not captured. The extensions and several checks were decided after the first result and are labelled as such.
+**What the results do not prove.** I'll list it honestly, in order.
 
-**Dual use.** The signals that reveal one system behind several accounts (same-minute posting, non-overlapping assignment, similar wording) also tell an operator how to avoid looking like one system: stagger timing, vary wording. We judge the benefit of making concentration measurable to be larger, since the signals come from public data and the platform has stronger ones.
+We did not show that even one note is wrong. Shared sources may simply be the right sources, and the human baseline explains this only in part.
 
-**Privacy and data.** All data is public and pseudonymous. We did not attempt to identify any participant or operator and name none. Note text is not redistributed; the repository contains code and aggregate tables only.
+The fleet, that is, one system behind several accounts, we identified by behaviour: volume, start dates, non-overlapping assignments, timing. "One operator" is our inference, not a fact.
 
-## Appendix B. Use of AI tools and prior work
+There is also a second cluster: six AI accounts that post about a second apart. We did not merge it. Why? Because the shared feed explains their timing.
 
-Claude (Anthropic) wrote the analysis code, ran the computations, proposed method options and drafted text, working in the project folder at the author's direction. <!-- TODO Das: state honestly how much of the final text is yours after rewriting. --> The author made the method decisions marked in `docs/decisions.md`, read the pairs, and is responsible for all content. A Gemini model labelled the reading pairs. No code predates the sprint. Conceptual link to swarm-canaries (Apart Swarm Alignment sprint, November 2026), no code reused.
+We took AI status from an enrollment snapshot on the download date.
 
-Code and tables: https://github.com/dassmod/independent-witnesses
+The text of the posts themselves is not in the public data. So we could not account for sources already cited in the post.
+
+The latest months are provisional, because some notes are still waiting for ratings.
+
+The reading sample is small. And the model that labelled the pairs did not open the links.
+
+Our similarity is lexical. It does not catch paraphrase.
+
+And last. We decided on the extensions and several checks after the first result. They are labelled as such.
+
+**Dual use.** There is an unpleasant side here. The same signals that let us see one system behind several accounts (posting in the same minute, non-overlapping assignments, similar words) tell an operator how to hide: spread out the timing, vary the wording. We still think the benefit is larger. The signals come from public data, and the platform itself has stronger ones.
+
+**Privacy and data.** All data is public and pseudonymous. We did not try to find out who is behind any account or operator, and we name no one. We do not redistribute note text. The repository contains only code and aggregate tables.
+
+## LLM Usage Statement
+
+Claude (Anthropic) wrote the analysis code, ran the computations, proposed method options and drafted the first version of the text, working in the project folder at my direction. I made the method decisions marked "(Das)" in `docs/decisions.md` and read the pairs. I wrote the Abstract, Introduction, Section 4.5, Discussion, Conclusion and Appendix A myself in Russian, and Claude translated them into English, keeping my wording and style as close as possible. Related Work, Methods and Results are Claude's draft, which I checked against the result tables. A Gemini model (Gemini 4 Hydrogen, thinking level High) labelled the reading pairs. No code predates the sprint. The idea links to swarm-canaries (Apart Swarm Alignment sprint, November 2026); no code was reused. I am responsible for all content.

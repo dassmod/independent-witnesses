@@ -4,6 +4,8 @@ On the same X post, are two Community Notes written by AI writers more alike tha
 
 Apart Research, AI x Epistemics Research Sprint, 13 to 15 November 2026. Track 2 (trust infrastructure) with a Track 4 angle. Solo project by Dastan Modubash.
 
+Report: [`report/Two-Notes-One-Witness.pdf`](report/Two-Notes-One-Witness.pdf). Slides: [`report/Two-Notes-One-Witness-slides.pdf`](report/Two-Notes-One-Witness-slides.pdf). Both are rendered from `report/draft.md` by `report/build/`. No code predates the sprint.
+
 ## What we found
 
 Data: X's public Community Notes files, dump dated 12 November 2026. Window: 2 September 2025 (first AI note) to 12 November 2026. Notes classified as misleading, collaborative notes excluded. All shares are post-weighted; intervals are 95%, cluster bootstrap over posts.
